@@ -30,33 +30,20 @@ q1_pivot['informality_rate'] = q1_pivot['IFL_NATURE_INFORMAL'] / (
     q1_pivot['IFL_NATURE_FORMAL'] + q1_pivot['IFL_NATURE_INFORMAL']
 )
 
-# Sidebar Filters
-st.sidebar.header("Filters")
-countries = st.sidebar.multiselect("Select Countries", q1_pivot['ref_area'].unique(),
-                                   default=q1_pivot['ref_area'].unique())
-genders = st.sidebar.multiselect("Select Genders", ['SEX_M', 'SEX_F'], default=['SEX_M','SEX_F'])
-year_range = st.sidebar.slider("Select Year Range", int(q1_pivot['time'].min()), int(q1_pivot['time'].max()),
-                               (2015, 2024))
 
-# Apply Filters
-filtered_data = q1_pivot[
-    (q1_pivot['ref_area'].isin(countries)) &
-    (q1_pivot['sex'].isin(genders)) &
-    (q1_pivot['time'] >= year_range[0]) &
-    (q1_pivot['time'] <= year_range[1])
-]
-
-# Tabs
-tabs = st.tabs([
+tabs1 = st.tabs([
     "Descriptive Stats", "Female vs Male %", "Gender Gap Over Time",
-    "Cross-Country Averages", "Gender Comparison by Country",
+    "Cross-Country Averages", "Gender Comparison by Country"
+])
+
+tabs2 = st.tabs([
     "Trends by Country", "Cross-Country (Both Genders)",
     "Combined Gender-Country Trends", "Coverage Table",
     "Summary Findings", "Policy Implications"
 ])
 
 # -------- TAB 1 --------
-with tabs[0]:
+with tabs1[0]:
     st.subheader("Descriptive Statistics")
     desc_stats = filtered_data.groupby(['ref_area', 'sex']).agg(
         mean_informality=('informality_rate', 'mean'),
@@ -83,7 +70,7 @@ with tabs[0]:
     """)
 
 # -------- TAB 2 --------
-with tabs[1]:
+with tabs1[1]:
     st.subheader("Female vs Male Informality Percentages")
     desc_stats = filtered_data.groupby(['ref_area', 'sex']).agg(
         mean_informality=('informality_rate', 'mean')
@@ -120,7 +107,7 @@ with tabs[1]:
     """)
 
 # -------- TAB 3 --------
-with tabs[2]:
+with tabs1[2]:
     st.subheader("Gender Gap Over Time")
     if 'SEX_F' in filtered_data['sex'].unique() and 'SEX_M' in filtered_data['sex'].unique():
         gender_gap = filtered_data.pivot_table(
@@ -154,7 +141,7 @@ with tabs[2]:
     """)
 
 # -------- TAB 4 --------
-with tabs[3]:
+with tabs1[3]:
     st.subheader("Cross-Country Informality Averages")
     cross_country_avg = filtered_data.groupby(['ref_area','time'])['informality_rate'].mean().reset_index()
     fig, ax = plt.subplots(figsize=(12,6))
@@ -175,7 +162,7 @@ with tabs[3]:
     """)
 
 # -------- TAB 5 --------
-with tabs[4]:
+with tabs1[4]:
     st.subheader("Average Informality Rates by Gender and Country")
     desc_stats = filtered_data.groupby(['ref_area', 'sex']).agg(
         mean_informality=('informality_rate', 'mean')
@@ -211,7 +198,7 @@ with tabs[4]:
     """)
 
 # -------- TAB 6 --------
-with tabs[5]:
+with tabs2[0]:
     st.subheader("Trend of Informality Rates in Creative Occupations (Each Country)")
     for country in filtered_data['ref_area'].unique():
         fig, ax = plt.subplots(figsize=(8,5))
@@ -239,7 +226,7 @@ with tabs[5]:
     """)
 
 # -------- TAB 7 --------
-with tabs[6]:
+with tabs2[1]:
     st.subheader("Cross-Country Comparison of Informality Rates (Both Genders)")
     fig, ax = plt.subplots(figsize=(12,6))
     for country in filtered_data['ref_area'].unique():
@@ -262,7 +249,7 @@ with tabs[6]:
     """)
 
 # -------- TAB 8 --------
-with tabs[7]:
+with tabs2[2]:
     st.subheader("Informality Rates in Creative Occupations by Country and Gender (Combined)")
     fig, ax = plt.subplots(figsize=(12,6))
     for country in filtered_data['ref_area'].unique():
@@ -290,7 +277,7 @@ with tabs[7]:
     """)
 
 # -------- TAB 9 --------
-with tabs[8]:
+with tabs2[3]:
     st.subheader("Coverage Table (Year Range by Country and Gender)")
     coverage_table = filtered_data.groupby(['ref_area', 'sex']).agg(
         min_year=('time', 'min'),
@@ -300,7 +287,7 @@ with tabs[8]:
     st.dataframe(coverage_table)
 
 # -------- TAB 10 --------
-with tabs[9]:
+with tabs2[4]:
     st.subheader("Summary Findings")
     st.markdown("""
     📊 **Summary Findings**
@@ -333,7 +320,7 @@ with tabs[9]:
     """)
 
 # -------- TAB 11 --------
-with tabs[10]:
+with tabs2[5]:
     st.subheader("Policy Implications")
     st.markdown("""
     ## 🎯 Policy Implications
