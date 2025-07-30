@@ -18,7 +18,7 @@ q1_filtered = q1_data[
     (q1_data['sex'].isin(['SEX_M', 'SEX_F']))
 ][['ref_area', 'time', 'sex', 'classif2', 'obs_value']]
 
-# Pivot for informality
+# Pivot for informality rate
 q1_pivot = q1_filtered.pivot_table(
     index=['ref_area', 'time', 'sex'],
     columns='classif2',
@@ -48,11 +48,14 @@ filtered_data = q1_pivot[
 
 # Tabs
 tabs = st.tabs([
-    "Descriptive Stats", "Female vs Male %", "Gender Gap Over Time", "Cross-Country Averages",
-    "Gender Comparison by Country", "Trends by Country", "Cross-Country (Both Genders)",
-    "Combined Gender-Country Trends", "Coverage Table", "Summary Findings", "Policy Implications"
+    "Descriptive Stats", "Female vs Male %", "Gender Gap Over Time",
+    "Cross-Country Averages", "Gender Comparison by Country",
+    "Trends by Country", "Cross-Country (Both Genders)",
+    "Combined Gender-Country Trends", "Coverage Table",
+    "Summary Findings", "Policy Implications"
 ])
 
+# -------- TAB 1 --------
 with tabs[0]:
     st.subheader("Descriptive Statistics")
     desc_stats = filtered_data.groupby(['ref_area', 'sex']).agg(
@@ -64,32 +67,59 @@ with tabs[0]:
     ).reset_index()
     st.dataframe(desc_stats)
     st.markdown("""
-    **What it means:** Provides averages, medians, and ranges of informality rates by country and gender.  
-    **Why do it:** Establishes a baseline for understanding gender differences.  
-    **Findings:** Cambodia shows the highest levels; France & UK the lowest; Latin America in the middle.  
+    **What it means:**  
+    This table summarizes key informality statistics for each country and gender.
+
+    - **Informality Rate** = proportion of creative sector workers who are informal.  
+    - **Columns**: Mean, median, minimum, maximum, and observation count.  
+
+    **Why do it:**  
+    To provide a baseline understanding of gendered informality distributions.  
+
+    **Findings:**  
+    - Cambodia shows very high informality across genders.  
+    - France & UK have the lowest rates.  
+    - Brazil, Argentina, and Colombia are in between.  
     """)
 
+# -------- TAB 2 --------
 with tabs[1]:
     st.subheader("Female vs Male Informality Percentages")
+    desc_stats = filtered_data.groupby(['ref_area', 'sex']).agg(
+        mean_informality=('informality_rate', 'mean')
+    ).reset_index()
     pivot_gender = desc_stats.pivot(index='ref_area', columns='sex', values='mean_informality').reset_index()
-    pivot_gender['female_vs_male_pct'] = (pivot_gender['SEX_F'] / pivot_gender['SEX_M']) * 100
-    fig, ax = plt.subplots(figsize=(10,6))
-    bars = ax.bar(pivot_gender['ref_area'], pivot_gender['female_vs_male_pct'], color='skyblue')
-    ax.axhline(100, color='red', linestyle='--')
-    for bar in bars:
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height(), f'{bar.get_height():.1f}%', 
-                ha='center', va='bottom')
-    ax.set_title("Female Informality as % of Male Informality")
-    ax.set_ylabel("Female % of Male Rate")
-    ax.set_xlabel("Country")
-    ax.grid(axis='y')
-    st.pyplot(fig)
+    if set(['SEX_F', 'SEX_M']).issubset(pivot_gender.columns):
+        pivot_gender['female_vs_male_pct'] = (pivot_gender['SEX_F'] / pivot_gender['SEX_M']) * 100
+        fig, ax = plt.subplots(figsize=(10,6))
+        bars = ax.bar(pivot_gender['ref_area'], pivot_gender['female_vs_male_pct'], color='skyblue')
+        ax.axhline(100, color='red', linestyle='--')
+        for bar in bars:
+            ax.text(bar.get_x() + bar.get_width()/2, bar.get_height(),
+                    f'{bar.get_height():.1f}%', ha='center', va='bottom')
+        st.pyplot(fig)
+    else:
+        st.info("This chart requires both Male and Female selected in filters.")
     st.markdown("""
-    **What it means:** Compares women’s informality as a % of men’s.  
-    **Why do it:** Normalizes data to highlight gender inequality.  
-    **Findings:** Cambodia >100% (women worse off); Brazil <100% (men worse off); France & UK low and balanced.  
+    **What it means:**  
+    We calculate the **average share of women in informal employment** in the creative sector for each country 
+    and compare it to the **average share of men**.
+
+    * 100% = parity → men and women equally likely.  
+    * >100% = women more likely.  
+    * <100% = men more likely.  
+
+    **Why do it:**  
+    Provides a normalized measure of gender inequality.  
+
+    **Findings:**  
+    - Cambodia: Women’s share ~111% of men’s.  
+    - Brazil: Men more affected.  
+    - Argentina & Colombia: Near parity.  
+    - France & UK: Balanced and low.  
     """)
 
+# -------- TAB 3 --------
 with tabs[2]:
     st.subheader("Gender Gap Over Time")
     if 'SEX_F' in filtered_data['sex'].unique() and 'SEX_M' in filtered_data['sex'].unique():
@@ -102,19 +132,28 @@ with tabs[2]:
             subset = gender_gap[gender_gap['ref_area'] == country]
             ax.plot(subset['time'], subset['gender_gap'], marker='o', label=country)
         ax.axhline(0, color='black', linestyle='--')
-        ax.set_title("Gender Gap in Informality (Female - Male)")
-        ax.set_xlabel("Year")
-        ax.set_ylabel("Gap (Positive = Women Higher)")
-        ax.legend()
         st.pyplot(fig)
-        st.markdown("""
-        **What it means:** Shows female rate minus male rate by year.  
-        **Why do it:** Highlights direction & size of gender inequality.  
-        **Findings:** Cambodia positive (women worse off), Brazil negative (men worse off), France & UK near zero.  
-        """)
     else:
         st.info("Please select both Male and Female to view Gender Gap.")
+    st.markdown("""
+    **What it means:**  
+    For each country and year, we calculate the **difference in informality rates between women and men**:
 
+    * Positive values → women more likely.  
+    * Negative values → men more likely.  
+    * Zero line → parity.  
+
+    **Why do it:**  
+    Shows direction & magnitude of inequality year by year.  
+
+    **Findings:**  
+    - Cambodia: Consistently above zero.  
+    - Brazil: Consistently below zero.  
+    - Argentina: Near zero, fluctuates.  
+    - France & UK: Minimal gender gaps.  
+    """)
+
+# -------- TAB 4 --------
 with tabs[3]:
     st.subheader("Cross-Country Informality Averages")
     cross_country_avg = filtered_data.groupby(['ref_area','time'])['informality_rate'].mean().reset_index()
@@ -122,40 +161,58 @@ with tabs[3]:
     for country in cross_country_avg['ref_area'].unique():
         subset = cross_country_avg[cross_country_avg['ref_area'] == country]
         ax.plot(subset['time'], subset['informality_rate'], marker='o', label=country)
-    ax.set_title("Cross-Country Average Informality Rates")
-    ax.set_xlabel("Year")
-    ax.set_ylabel("Informality Rate")
     ax.legend()
     st.pyplot(fig)
     st.markdown("""
-    **What it means:** Averages men & women’s rates by country.  
-    **Why do it:** Shows long-term trends across countries.  
-    **Findings:** Cambodia highest; France & UK lowest; Latin America mid-level, declining.  
+    **What it means:**  
+    This graph plots the **average informality rate** for each country over time, combining both men and women.
+
+    **Findings:**  
+    - Cambodia: Persistently highest.  
+    - France & UK: Lowest and stable.  
+    - Brazil & Argentina: Moderate, slightly declining.  
+    - Colombia: Moderate, between Europe and Latin America.  
     """)
 
+# -------- TAB 5 --------
 with tabs[4]:
     st.subheader("Average Informality Rates by Gender and Country")
-    bar_width = 0.35
+    desc_stats = filtered_data.groupby(['ref_area', 'sex']).agg(
+        mean_informality=('informality_rate', 'mean')
+    ).reset_index()
     pivot_gender = desc_stats.pivot(index='ref_area', columns='sex', values='mean_informality').reset_index()
-    fig, ax = plt.subplots(figsize=(12,6))
-    bars_m = ax.bar(pivot_gender.index - bar_width/2, pivot_gender['SEX_M'], width=bar_width, label='Male')
-    bars_f = ax.bar(pivot_gender.index + bar_width/2, pivot_gender['SEX_F'], width=bar_width, label='Female')
-    ax.set_xticks(pivot_gender.index)
-    ax.set_xticklabels(pivot_gender['ref_area'])
-    ax.set_title("Average Informality Rates by Gender and Country")
-    ax.set_ylabel("Mean Informality Rate")
-    ax.legend()
-    for bar in list(bars_m) + list(bars_f):
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height(), f'{bar.get_height():.2f}', ha='center', va='bottom')
-    st.pyplot(fig)
+    if 'SEX_M' in pivot_gender.columns and 'SEX_F' in pivot_gender.columns:
+        bar_width = 0.35
+        fig, ax = plt.subplots(figsize=(12,6))
+        bars_m = ax.bar(pivot_gender.index - bar_width/2, pivot_gender['SEX_M'], width=bar_width, label='Male')
+        bars_f = ax.bar(pivot_gender.index + bar_width/2, pivot_gender['SEX_F'], width=bar_width, label='Female')
+        ax.set_xticks(pivot_gender.index)
+        ax.set_xticklabels(pivot_gender['ref_area'])
+        ax.legend()
+        st.pyplot(fig)
+    else:
+        st.info("This chart requires both Male and Female selected in filters.")
     st.markdown("""
-    **What it means:** Side-by-side bars compare male vs female rates.  
-    **Why do it:** Direct gender comparison within each country.  
-    **Findings:** Cambodia women worse off; Brazil & Colombia men worse off; France & UK lowest overall.  
+    **What it means:**  
+    Side‑by‑side bars show the **average share of men and women in informal employment** within the creative sector.
+
+    * **X-axis**: Countries.  
+    * **Y-axis**: Informality rate (proportion informal).  
+    * Higher bar = larger share of that gender in informal jobs.  
+
+    **Why do it:**  
+    Provides a clear, direct comparison between genders in each country.  
+
+    **Findings:**  
+    - Brazil & Colombia: Men more likely.  
+    - Cambodia: Women more likely.  
+    - Argentina: Near parity.  
+    - France & UK: Both genders consistently low.  
     """)
 
+# -------- TAB 6 --------
 with tabs[5]:
-    st.subheader("Trends by Country and Gender")
+    st.subheader("Trend of Informality Rates in Creative Occupations (Each Country)")
     for country in filtered_data['ref_area'].unique():
         fig, ax = plt.subplots(figsize=(8,5))
         subset = filtered_data[filtered_data['ref_area'] == country]
@@ -168,47 +225,71 @@ with tabs[5]:
         ax.legend(title="Gender")
         st.pyplot(fig)
     st.markdown("""
-    **What it means:** Shows trends for each country separately.  
-    **Why do it:** Lets us see country-level gender patterns.  
-    **Findings:** Cambodia: women worse off; Brazil: men worse off; Europe: stable, low.  
+    **What it means:**  
+    Shows informality trends for each country, split by gender.  
+
+    **Why do it:**  
+    Allows country‑specific analysis of male vs female informality.  
+
+    **Findings:**  
+    - Cambodia: Women consistently more likely.  
+    - Brazil: Men consistently more likely.  
+    - Argentina: Gender gap small and fluctuating.  
+    - France & UK: Both genders low and stable.  
     """)
 
+# -------- TAB 7 --------
 with tabs[6]:
-    st.subheader("Cross-Country Comparison (Both Genders)")
+    st.subheader("Cross-Country Comparison of Informality Rates (Both Genders)")
     fig, ax = plt.subplots(figsize=(12,6))
     for country in filtered_data['ref_area'].unique():
         avg_country = filtered_data[filtered_data['ref_area'] == country].groupby('time')['informality_rate'].mean()
         ax.plot(avg_country.index, avg_country.values, marker='o', label=country)
-    ax.set_title("Cross-Country Comparison of Informality Rates")
-    ax.set_xlabel("Year")
-    ax.set_ylabel("Mean Informality Rate")
     ax.legend()
     st.pyplot(fig)
     st.markdown("""
-    **What it means:** Combines men and women averages.  
-    **Why do it:** Overview of global creative sector informality.  
-    **Findings:** Cambodia highest; Europe lowest; Latin America mid-level.  
+    **What it means:**  
+    This graph shows the **average informality rate (men + women)** for each country.  
+
+    **Why do it:**  
+    Provides a global overview of informality, not split by gender.  
+
+    **Findings:**  
+    - Cambodia: Consistently highest.  
+    - France & UK: Consistently lowest.  
+    - Brazil & Argentina: Mid-level with slight declines.  
+    - Colombia: Moderate, between Europe and Latin America.  
     """)
 
+# -------- TAB 8 --------
 with tabs[7]:
-    st.subheader("Informality Rates by Country and Gender (Combined)")
+    st.subheader("Informality Rates in Creative Occupations by Country and Gender (Combined)")
     fig, ax = plt.subplots(figsize=(12,6))
     for country in filtered_data['ref_area'].unique():
         subset = filtered_data[filtered_data['ref_area'] == country]
         for gender in genders:
             gender_data = subset[subset['sex'] == gender]
             ax.plot(gender_data['time'], gender_data['informality_rate'], marker='o', label=f"{country}-{gender}")
-    ax.set_title("Informality Rates in Creative Occupations by Country and Gender")
-    ax.set_xlabel("Year")
-    ax.set_ylabel("Informality Rate")
     ax.legend()
     st.pyplot(fig)
     st.markdown("""
-    **What it means:** Combines all countries and genders in one chart.  
-    **Why do it:** Allows cross-country and cross-gender comparison at once.  
-    **Findings:** Confirms Cambodia worst, France & UK best, others mid-level.  
+    **What it means:**  
+    Combines all countries and genders into one chart.  
+    * **X-axis**: Years (2015–2024).  
+    * **Y-axis**: Informality rate.  
+    * Each line = Country–Gender pair.  
+
+    **Why do it:**  
+    Enables global comparisons across gender and geography in one figure.  
+
+    **Findings:**  
+    - Cambodia: Women consistently above men.  
+    - Brazil: Men consistently above women.  
+    - France & UK: Both genders lowest and stable.  
+    - Argentina & Colombia: Moderate, close to parity.  
     """)
 
+# -------- TAB 9 --------
 with tabs[8]:
     st.subheader("Coverage Table (Year Range by Country and Gender)")
     coverage_table = filtered_data.groupby(['ref_area', 'sex']).agg(
@@ -218,24 +299,68 @@ with tabs[8]:
     ).reset_index()
     st.dataframe(coverage_table)
 
+# -------- TAB 10 --------
 with tabs[9]:
     st.subheader("Summary Findings")
     st.markdown("""
-    - Cambodia: Highest informality, women more likely to be in informal employment.
-    - Brazil & Colombia: Men more likely, though women remain vulnerable.
-    - Argentina: Near parity; moderate informality.
-    - France & UK: Lowest and most stable; narrow gender gaps.
-    - Trends: Europe stable, Latin America slightly declining, Cambodia persistently high.
-    - Data Gaps: FRA, ARG, KHM end in 2023; GBR, BRA, COL extend to 2024.
+    📊 **Summary Findings**
+
+    * **Cambodia**  
+      - Highest informality rates.  
+      - Women consistently more likely.  
+      - Strong gendered vulnerability in creative sector.  
+
+    * **Brazil & Colombia**  
+      - Moderate to high levels.  
+      - Men more likely, but women remain vulnerable.  
+
+    * **Argentina**  
+      - Near parity; moderate informality.  
+
+    * **France & UK**  
+      - Lowest and stable.  
+      - Minimal gender gaps.  
+
+    * **Trends (2015–2024)**  
+      - Europe: Stable, low.  
+      - Latin America: Slight downward trend.  
+      - Cambodia: Persistently high.  
+
+    * **Data Gaps**  
+      - FRA, ARG, KHM end in 2023.  
+      - GBR, BRA, COL extend to 2024.  
+      - Cross‑country comparisons after 2023 require caution.  
     """)
 
+# -------- TAB 11 --------
 with tabs[10]:
     st.subheader("Policy Implications")
     st.markdown("""
-    - Formalization in Developing Economies: Simplify registration and incentivize formal hiring.
-    - Gender-Specific Protections: Cambodia – maternity & childcare support; Brazil & Colombia – balanced social protections.
-    - Maintain Protections in Europe: Safeguard against gig-economy erosion.
-    - Union & Guild Support: Strengthen MEAA, UNI MEI, CICADA, and Colombian musician guilds.
-    - Improve Data Quality: Harmonize surveys and strengthen Cambodia & Argentina statistics.
+    ## 🎯 Policy Implications
+
+    * **Formalization in Developing Economies**  
+      *Why:* Cambodia and Latin America show moderate to high informality.  
+      *Action:* Simplify registration, incentivize formal hiring, especially for freelancers.  
+      *Source:* ILO Microdata Query Set v7 (Sec 2, Sec 5).  
+
+    * **Gender-Specific Protections**  
+      *Why:* Women in Cambodia more affected; men in Brazil & Colombia more affected.  
+      *Action:* Cambodia – expand maternity & childcare; Brazil & Colombia – balanced protections.  
+      *Source:* ILO Brief 12.  
+
+    * **Maintain Protections in Europe**  
+      *Why:* France & UK lowest, but gig work risk exists.  
+      *Action:* Maintain strong protections; monitor gig economy.  
+      *Source:* ILO Brief 32.  
+
+    * **Union & Guild Support**  
+      *Why:* Collective bargaining essential for freelancers.  
+      *Action:* Strengthen MEAA, UNI MEI, CICADA, Colombian guilds.  
+
+    * **Improve Data Quality & Comparability**  
+      *Why:* FRA, ARG, KHM stop in 2023; UK, BRA, COL extend to 2024.  
+      *Action:* Harmonize Labour Force Surveys; strengthen Cambodia & Argentina.  
+      *Source:* ILO Microdata Query Set v7.  
     """)
+
 
