@@ -39,7 +39,7 @@ section = st.sidebar.radio(
     ["Descriptive Stats", "Female vs Male %", "Gender Gap Over Time",
      "Cross-Country Averages", "Gender Comparison by Country",
      "Trends by Country", "Cross-Country (Both Genders)",
-     "Combined Gender-Country Trends", "Coverage Table",
+     "Combined Gender-Country Trends",
      "Summary Findings", "Policy Implications"]
 )
 
