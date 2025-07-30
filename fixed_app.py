@@ -89,21 +89,27 @@ elif section == "Female vs Male %":
     else:
         st.info("Only one gender present. Showing available data.")
     st.markdown("""
-    **What it means:**  
-    We calculate the average share of women in informal employment and compare it to men.
+   **Female vs Male Informality Percentages** Graph
 
-    * 100% = parity  
-    * >100% = women more likely  
-    * <100% = men more likely  
+**What it means:**
+We calculate the **average share of women in informal employment** in the creative sector for each country and compare it to the **average share of men**.
 
-    **Why do it:**  
-    Provides a normalized measure of gender inequality.  
+* A value of **100%** = parity → men and women are equally likely to be in informal jobs.
+* A value of **>100%** = women are **more likely to be in informal employment** (i.e., a higher proportion of women in the creative sector lack formal work protections compared to men).
+* A value of **<100%** = men are **more likely to be in informal employment** than women.
 
-    **Findings:**  
-    - Cambodia: Women ~111% of men.  
-    - Brazil: Men more affected.  
-    - Argentina & Colombia: Near parity.  
-    - France & UK: Balanced and low.  
+**Why do it:**
+Because absolute informality rates differ across countries, comparing women to men as a percentage provides a **normalized measure of gender inequality**.
+
+* It highlights whether women face **greater relative risk of informal work** or whether men do.
+* The **red dashed line at 100%** marks equality for easy interpretation: values above it show women disadvantaged, values below it show men disadvantaged.
+
+**Findings:**
+
+* **Cambodia**: Women’s share of informal employment is \~111% of men’s → women are at a clear disadvantage, with more women than men working without formal contracts or protections.
+* **Brazil**: Women’s share is \~75% of men’s → men are more affected by informality than women in creative jobs.
+* **Argentina & Colombia**: Rates are close to parity, meaning women and men are similarly likely to be informal.
+* **France & UK**: Both genders show balanced and low informality, reflecting stronger labor protections.
     """)
 
 # -------- TAB 3 --------
@@ -123,21 +129,31 @@ elif section == "Gender Gap Over Time":
     else:
         st.info("Please select both Male and Female to view Gender Gap.")
     st.markdown("""
-    **What it means:**  
-    Difference in informality: Female rate − Male rate.  
+    **Gender Gap Over Time** Graph
 
-    * Positive = women more likely  
-    * Negative = men more likely  
-    * Zero = parity  
+**What it means:**
+For each country and year, we calculate the **difference in informality rates between women and men**:
 
-    **Why do it:**  
-    Shows direction & magnitude of inequality over time.  
+$$
+\text{Gender Gap} = \text{Female Informality Rate} - \text{Male Informality Rate}
+$$
 
-    **Findings:**  
-    - Cambodia: Women more likely.  
-    - Brazil: Men more likely.  
-    - Argentina: Near zero, fluctuates.  
-    - France & UK: Minimal gaps.  
+* **Positive values** → a higher proportion of women in creative jobs are in informal employment compared to men (women more likely to lack formal work protections).
+* **Negative values** → a higher proportion of men are in informal employment compared to women.
+* **Zero line** → parity: men and women have the same informality rate.
+
+**Why do it:**
+
+* Instead of plotting men and women separately, this graph condenses the difference into **one line per country**, making it easy to see **who is more disadvantaged** in informal work over time.
+* It highlights not just whether inequality exists, but **its direction and magnitude** year by year.
+
+**Findings:**
+
+* **Cambodia**: Consistently above zero, meaning women are more likely to be in informal jobs year after year.
+* **Brazil**: Consistently below zero, meaning men are more likely to be in informal jobs.
+* **Argentina**: The line fluctuates near zero, showing small shifts back and forth but no persistent, large gender imbalance.
+* **France & UK**: Stays close to zero, indicating very small gender gaps and relatively equal exposure to informal employment.
+
     """)
 
 # -------- TAB 4 --------
@@ -151,14 +167,30 @@ elif section == "Cross-Country Averages":
     ax.legend()
     st.pyplot(fig)
     st.markdown("""
-    **What it means:**  
-    Plots average informality (men + women) by country over time.  
+    **Cross-Country Average Informality Rates Graph**
 
-    **Findings:**  
-    - Cambodia: Highest.  
-    - France & UK: Lowest and stable.  
-    - Brazil & Argentina: Moderate with slight declines.  
-    - Colombia: Moderate, between Europe & Latin America.  
+**What it means:**
+This graph plots the **average informality rate** for each country over time, combining both men and women.
+
+* **X-axis**: Years (2015–2024).
+* **Y-axis**: Proportion of creative-sector workers in informal employment (higher values = larger share of workers without formal contracts or protections).
+* Each line = one country’s trend.
+
+So if a country’s line is higher, it means a **greater proportion of creative workers (both genders) are in informal jobs**.
+
+**Why do it:**
+
+* Looking at averages across men and women provides a **broad picture** of how informal employment evolves in each country.
+* Helps identify **which countries have the largest informality challenges** and whether they are improving or worsening over time.
+* Makes it possible to compare **long-term national patterns** side by side.
+
+**Findings:**
+
+* **Cambodia**: Persistently the highest — meaning the majority of creative workers lack formal labor protections.
+* **France & UK**: The lowest and very stable — showing strong formal employment systems in the creative sector.
+* **Brazil and Argentina**: Mid-level informality, with slight declines, suggesting slow improvements.
+* **Colombia**: Moderate levels, falling between Latin America and Europe.
+* **Important Note**: Data coverage ends in 2023 for **France, Argentina, and Cambodia**, while the UK, Brazil, and Colombia extend to 2024. Cross-country comparisons beyond 2023 must therefore be interpreted cautiously.
     """)
 
 # -------- TAB 5 --------
@@ -180,14 +212,30 @@ elif section == "Gender Comparison by Country":
     else:
         st.info("Only one gender present. Showing available data.")
     st.markdown("""
-    **What it means:**  
-    Side‑by‑side bars compare men vs women in each country.  
+**Average Informality Rates by Gender and Country**
 
-    **Findings:**  
-    - Brazil & Colombia: Men more informal.  
-    - Cambodia: Women more informal.  
-    - Argentina: Near parity.  
-    - France & UK: Low, balanced.  
+**What it means:**
+This chart compare the **average share of men and women in informal employment** within the creative sector in each country.
+
+* **X-axis**: Countries.
+* **Y-axis**: Average informality rate (proportion of creative workers in informal jobs).
+* Blue lines = men, Orange bars = women.
+* Higher bars = a greater proportion of that gender working without formal contracts or protections.
+
+So, for example, if the male bar is taller than the female bar, it means **a larger share of men in that country are in informal employment** compared to women.
+
+**Why do it:**
+
+* This visualization makes the **gender comparison very clear for each country** at a glance.
+* It avoids normalizations and instead shows the **absolute difference in informality rates**.
+* Helps identify whether gender inequality in informal work disadvantages **men** or **women** in each country.
+
+**Findings:**
+
+* **Brazil & Colombia**: Men’s bars are higher → men are more likely to be in informal creative employment.
+* **Cambodia**: Women’s bar is higher → women are more likely to be in informal creative employment.
+* **Argentina**: Male and female bars are nearly the same → informality is relatively balanced between genders.
+* **France & UK**: Both genders have very low bars, indicating a **low risk of informality** overall and minimal gender gap.
     """)
 
 # -------- TAB 6 --------
@@ -205,14 +253,34 @@ elif section == "Trends by Country":
         ax.legend(title="Gender")
         st.pyplot(fig)
     st.markdown("""
-    **What it means:**  
-    Shows trends per country, split by gender.  
 
-    **Findings:**  
-    - Cambodia: Women more likely.  
-    - Brazil: Men more likely.  
-    - Argentina: Small fluctuations.  
-    - France & UK: Stable, low.  
+## Trend of Informality Rates in Creative Occupations (Each Country)
+
+**What it means:**
+This chart shows the **year‑by‑year trend in informality rates** for men and women in the creative sector, with a separate graph for each country.
+
+* **X-axis**: Years (2015–2024).
+* **Y-axis**: Informality rate (proportion of creative workers without formal contracts or protections).
+* Two lines per country:
+
+  * **Blue line = Men**
+  * **Orange line = Women**
+* The distance between the lines reflects the size of the gender gap in that country.
+
+**Why do it:**
+
+* Enables **country‑specific exploration** of how informality evolves over time.
+* Helps identify whether informality is trending upward or downward in each country.
+* Clearly shows **gender differences within each country**, rather than only aggregated comparisons.
+
+**Findings:**
+
+* **Cambodia**: Women’s line consistently above men’s, showing women are more likely to work informally each year.
+* **Brazil**: Men’s line consistently above women’s, meaning men are more exposed to informal creative employment.
+* **Argentina**: Male and female lines stay close, fluctuating slightly but generally near parity.
+* **France & UK**: Both genders remain at the bottom, with very low and stable informality rates.
+* **Colombia**: Moderate informality, with men slightly more affected than women in most years.
+ 
     """)
 
 # -------- TAB 7 --------
@@ -225,14 +293,33 @@ elif section == "Cross-Country (Both Genders)":
     ax.legend()
     st.pyplot(fig)
     st.markdown("""
-    **What it means:**  
-    Combines men & women to show overall rates.  
+  **Cross-Country Comparison of Informality Rates (Both Genders)**
 
-    **Findings:**  
-    - Cambodia: Highest.  
-    - France & UK: Lowest.  
-    - Brazil & Argentina: Mid-level, slight declines.  
-    - Colombia: Moderate.  
+**What it means:**
+This graph shows the **average informality rate** (men and women combined) for each country across the years.
+
+* **X-axis**: Years (2015–2024).
+* **Y-axis**: Proportion of all creative‑sector workers (men + women) in informal employment.
+* Each line = one country’s combined trend.
+
+So, a country’s line being higher means a **greater share of creative workers (both genders) are in informal jobs** in that country.
+
+**Why do it:**
+
+* Provides a **big-picture view** of how informal employment in the creative sector differs across countries.
+* Makes it easy to spot **which countries consistently face higher risks of informal work** and which ones maintain low levels.
+* Useful for policy discussions because it focuses on overall workforce conditions rather than gender splits.
+
+**Findings:**
+
+* **Cambodia**: Consistently the highest line → most creative workers lack formal contracts and protections.
+* **France & UK**: The lowest and very stable → strong labor institutions keep informal work limited.
+* **Brazil & Argentina**: Moderate levels, showing small but steady improvements (slight downward slope).
+* **Colombia**: Falls in between Europe and Latin America → moderate levels of informality.
+* **Important Note**: Data for **France, Argentina, and Cambodia** stops at 2023, while **UK, Brazil, and Colombia** extend to 2024.
+  → Cross-country comparisons after 2023 should be treated with caution.
+
+ 
     """)
 
 # -------- TAB 8 --------
@@ -247,14 +334,31 @@ elif section == "Combined Gender-Country Trends":
     ax.legend()
     st.pyplot(fig)
     st.markdown("""
-    **What it means:**  
-    Shows every Country–Gender pair in one chart.  
+**Informality Rates in Creative Occupations by Country and Gender (Combined Line Graph)**
 
-    **Findings:**  
-    - Cambodia: Women above men.  
-    - Brazil: Men above women.  
-    - France & UK: Lowest, stable.  
-    - Argentina & Colombia: Moderate.  
+**What it means:**
+This chart displays **informality rates over time for both men and women across all six countries** in one figure.
+
+* **X-axis**: Years (2015–2024).
+* **Y-axis**: Informality rate = proportion of creative-sector workers in informal employment.
+* Each line = a unique **Country–Gender pair** (e.g., “Brazil – Male” or “Cambodia – Female”).
+
+So, when two lines for a country diverge, it means men and women are experiencing **different levels of exposure to informal employment**.
+
+**Why do it:**
+
+* Allows a **global view** of how men and women fare across all countries at once.
+* Useful for spotting both **within-country gender gaps** and **cross-country differences**.
+* Helps policymakers see **whether inequality is gender-driven, country-driven, or both**.
+
+**Findings:**
+
+* **Cambodia**: Both genders are at high risk, but women’s line is consistently above men’s → women more likely to be in informal creative employment.
+* **Brazil**: Men’s line is consistently above women’s → men more likely to be in informal jobs.
+* **France & UK**: Both genders remain at the bottom of the graph → consistently low rates and very small gender gaps.
+* **Argentina & Colombia**: Show moderate levels; Argentina’s male and female lines are close, while Colombia shows men slightly higher.
+* **Important Note**: Data for **France, Argentina, and Cambodia** only extends to 2023, while **UK, Brazil, and Colombia** include 2024. Comparisons in 2024 should therefore focus on countries with available data.
+ 
     """)
 
 
@@ -262,39 +366,82 @@ elif section == "Combined Gender-Country Trends":
 elif section == "Summary Findings":
     st.subheader("Summary Findings")
     st.markdown("""
-    📊 **Summary Findings**
+  📊 Summary Findings
 
-    * **Cambodia**: Highest, women disadvantaged.  
-    * **Brazil & Colombia**: Men more affected, women still vulnerable.  
-    * **Argentina**: Near parity.  
-    * **France & UK**: Lowest, balanced.  
-    * **Trends**: Europe stable, Latin America improving, Cambodia persistently high.  
-    * **Data Gaps**: FRA, ARG, KHM end 2023; GBR, BRA, COL extend 2024.  
+* **Cambodia**
+
+  * Has the **highest informality rates** among the six countries.
+  * Women are consistently **more likely to be in informal creative employment** than men, meaning a greater share of female creative workers lack formal contracts or labor protections.
+  * This highlights a strong gendered vulnerability in Cambodia’s creative sector.
+
+* **Brazil & Colombia**
+
+  * Both show **moderate to high levels of informality** compared to Europe.
+  * In both countries, **men are more likely than women to be in informal jobs**.
+  * However, women remain vulnerable: while men’s rates are higher, female creative workers are still exposed to precarious work.
+
+* **Argentina**
+
+  * Displays **near parity** between men and women, with rates close together.
+  * Informality is **moderate**, higher than Europe but not as severe as Cambodia.
+  * Gender differences are small, though both groups face significant informality.
+
+* **France & United Kingdom**
+
+  * Consistently report the **lowest informality rates**.
+  * Gender gaps are minimal: men and women are almost equally likely to be in formal creative employment.
+  * Reflects **strong labor protections** and more robust institutional frameworks in European creative industries.
+
+* **Trends (2015–2024)**
+
+  * **Europe**: Stable low informality, showing no evidence of deterioration.
+  * **Latin America (Brazil, Argentina, Colombia)**: Slight downward trend, indicating gradual improvements in formalization.
+  * **Cambodia**: Persistently high informality, with little sign of improvement across the period.
+
+* **Data Gaps & Reliability Considerations**
+
+  * Data coverage ends in **2023 for France, Argentina, and Cambodia**, while **UK, Brazil, and Colombia** extend through **2024**.
+  * **Cross‑country comparisons after 2023 must be treated cautiously**, since some countries have missing data for the final year.
+  * As this is a **Level 2 (Aggregate) query**, reliability is expected to be high (>80%), so we did not filter observations.
+  * Nonetheless, uneven data coverage remains a limitation for cross‑country analyses. 
     """)
 
 # -------- TAB 11 --------
 elif section == "Policy Implications":
     st.subheader("Policy Implications")
     st.markdown("""
-    ## 🎯 Policy Implications
+   
+## 🎯 Policy Implications
 
-    * **Formalization in Developing Economies**  
-      Simplify registration, incentivize hiring, especially for freelancers.  
-      *Source:* ILO Microdata Query Set v7.  
+* **Formalization in Developing Economies**
 
-    * **Gender-Specific Protections**  
-      Cambodia: maternity & childcare; Brazil & Colombia: balanced protections.  
-      *Source:* ILO Brief 12.  
+  * *Why:* Cambodia and Latin America (Brazil, Argentina, Colombia) show moderate to high informality in the creative sector.
+  * *Action:* Simplify registration, cut barriers, and incentivize formal hiring, especially for freelancers and project‑based workers.
+  * *Source:* ILO Microdata Query Set v7 (Sec 2, Sec 5).
 
-    * **Maintain Protections in Europe**  
-      Keep frameworks strong, monitor gig economy.  
-      *Source:* ILO Brief 32.  
+* **Gender-Specific Protections**
 
-    * **Union & Guild Support**  
-      Strengthen MEAA, UNI MEI, CICADA, Colombian guilds.  
+  * *Why:* Women in Cambodia face higher risks, while men in Brazil and Colombia are more affected — both remain vulnerable.
+  * *Action:* In Cambodia: expand maternity and childcare support; in Brazil & Colombia: ensure balanced social protection for both genders.
+  * *Source:* ILO Brief 12, *Statistical Profile of the Media and Culture Sector*.
 
-    * **Improve Data Quality & Comparability**  
-      FRA, ARG, KHM end 2023; harmonize surveys; build statistical capacity.  
-      *Source:* ILO Microdata Query Set v7.  
+* **Maintain Protections in Europe**
+
+  * *Why:* France and the UK have the lowest rates, but temporary and gig work could pose risks.
+  * *Action:* Maintain strong protections and monitor gig‑economy expansion.
+  * *Source:* ILO Brief 32, *Statistical Profile of the Media and Culture Sector*.
+
+* **Union & Guild Support**
+
+  * *Why:* Collective bargaining strengthens protections for freelancers and temporary creative workers.
+  * *Action:* Support MEAA, UNI MEI, CICADA Cambodia, and Colombian musician guilds in advocacy.
+
+* **Improve Data Quality & Comparability**
+
+  * *Why:* FRA, ARG, and KHM data end in 2023; UK, BRA, and COL extend to 2024 → limits comparisons.
+  * *Action:* Harmonize Labour Force Surveys and strengthen statistical capacity in Cambodia and Argentina.
+  * *Source:* ILO Microdata Query Set v7.
+
+ 
     """)
 
